@@ -41,6 +41,17 @@ const findUserByName = (name) => {
     );
   };
   
+  app.get("/users", (req, res) => {
+    const name = req.query.name;
+    if (name != undefined) {
+      let result = findUserByName(name);
+      result = { users_list: result };
+      res.send(result);
+    } else {
+      res.send(users);
+    }
+  });
+  
   const findUserById = (id) =>
     users["users_list"].find((user) => user["id"] === id);
   
@@ -63,8 +74,14 @@ const findUserByName = (name) => {
     addUser(userToAdd);
     res.send();
   });
-
-
+  const deleteUser = (id) => {
+    users["users_list"] = users["users_list"].filter((user) => user.id !== id);
+  };
+  
+  app.delete("/users/:id", (req, res) => {
+    const id = req.params.id;
+    deleteUser(id);
+  });
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
