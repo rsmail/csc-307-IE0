@@ -102,4 +102,4 @@ const findUserByNameAndJob = (name, job) => {
     } else {
       res.send(users);
     }
-  });
+  }); 
