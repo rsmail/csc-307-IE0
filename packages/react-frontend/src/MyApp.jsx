@@ -13,14 +13,31 @@ function MyApp() {
     setCharacters(updated);
 
   }
-  function updateList(person) {
-    setCharacters([...characters, person]);
-  }
   // src/MyApp.js (a new inner function inside MyApp())
 
   function fetchUsers() {
     const promise = fetch("http://localhost:8000/users");
     return promise;
+  }
+  // src/MyApp.js (a new inner function inside MyApp())
+  function postUser(person) {
+    const promise = fetch("Http://localhost:8000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(person),
+    });
+
+    return promise;
+  }
+  // src/MyApp.js (a new inner function inside MyApp())
+  function updateList(person) {
+    postUser(person)
+      .then(() => setCharacters([...characters, person]))
+      .catch((error) => {
+        console.log(error);
+      });
   }
   // src/MyApp.js (a new block inside MyApp())
 
