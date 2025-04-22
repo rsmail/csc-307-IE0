@@ -58,7 +58,7 @@ const findUserByName = (name) => {
     users["users_list"].find((user) => user["id"] === id);
   
   app.get("/users/:id", (req, res) => {
-    const id = req.params["id"]; //or req.params.id
+    const id = req.params["id"]; 
     let result = findUserById(id);
     if (result === undefined) {
       res.status(404).send("Resource not found.");
@@ -71,21 +71,38 @@ const findUserByName = (name) => {
     return user;
   };
   
+
   app.post("/users", (req, res) => {
     const userToAdd = req.body;
-    //userToAdd.id = Math.random();
-    userToAdd.id = Math.floor(Math.random() * 1000000); // random int from 0 to 999999, this is better than a decimal I think
-    const newUser = addUser(userToAdd); // this send the object we just made to the frontend (with random id we jsut made)
+    const id = Math.floor(Math.random() * 1000000).toString();
+    console.log(typeof id);    
+    const newUser = {
+      id: id,
+      name: userToAdd.name,
+      job: userToAdd.job,
+    };
+  
+    addUser(newUser);
     res.status(201).send(newUser);
   });
+
   const deleteUser = (id) => {
+    const initialLength = users["users_list"].length;
     users["users_list"] = users["users_list"].filter((user) => user.id !== id);
+    return users["users_list"].length < initialLength; 
   };
   
   app.delete("/users/:id", (req, res) => {
     const id = req.params.id;
-    deleteUser(id);
+    const wasDeleted = deleteUser(id);
+  
+    if (wasDeleted) {
+      res.status(204).send(); 
+    } else {
+      res.status(404).send("User not found.");
+    }
   });
+  
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
