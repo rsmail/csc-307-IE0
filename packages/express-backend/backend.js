@@ -73,8 +73,10 @@ const findUserByName = (name) => {
   
   app.post("/users", (req, res) => {
     const userToAdd = req.body;
-    addUser(userToAdd);
-    res.send();
+    //userToAdd.id = Math.random();
+    userToAdd.id = Math.floor(Math.random() * 1000000); // random int from 0 to 999999, this is better than a decimal I think
+    const newUser = addUser(userToAdd); // this send the object we just made to the frontend (with random id we jsut made)
+    res.status(201).send(newUser);
   });
   const deleteUser = (id) => {
     users["users_list"] = users["users_list"].filter((user) => user.id !== id);
