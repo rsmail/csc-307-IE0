@@ -7,24 +7,22 @@ import Form from "./Form";
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
-  function removeOneCharacter(index) {
-  const userId = characters[index].id;
-
-  fetch(`http://localhost:8000/users/${userId}`, {
-    method: "DELETE",
-  })
-    .then((res) => {
-      if (res.status === 204) {        
-        const updated = characters.filter((_, i) => i !== index);        
-        setCharacters(updated);
-      } else if (res.status === 404) {
-        console.error("User not found.");
-      } else {
-        console.error("Unexpected error.");
-      }
+  function removeOneCharacter(userId) {
+    fetch(`http://localhost:8000/users/${userId}`, {
+      method: "DELETE",
     })
-    .catch((err) => console.error("Delete failed:", err));
-}
+      .then((res) => {
+        if (res.status === 204) {        
+          const updated = characters.filter((user) => user._id !== userId);        
+          setCharacters(updated);
+        } else if (res.status === 404) {
+          console.error("User not found.");
+        } else {
+          console.error("Unexpected error.");
+        }
+      })
+      .catch((err) => console.error("Delete failed:", err));
+  }
   // src/MyApp.js (a new inner function inside MyApp())
 
   function fetchUsers() {
