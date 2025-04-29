@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import userServices from './services/user-services.js';
 
-const { addUser, findUserById, findUserByName, findUserByNameAndJob } = userServices;
+const { addUser, findUserById, findUserByName, findUserByNameAndJob, deleteUserById } = userServices;
 
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -143,22 +143,26 @@ app.use(express.json());
 
 
 
-  const deleteUser = (id) => {
-    const initialLength = users["users_list"].length;
-    users["users_list"] = users["users_list"].filter((user) => user.id !== id);
-    return users["users_list"].length < initialLength; 
-  };
+  // const deleteUser = (id) => {
+  //   const initialLength = users["users_list"].length;
+  //   users["users_list"] = users["users_list"].filter((user) => user.id !== id);
+  //   return users["users_list"].length < initialLength; 
+  // };
   
   app.delete("/users/:id", (req, res) => {
-    // const id = req.params.id;
-    // const wasDeleted = deleteUser(id);
-  
-    // if (wasDeleted) {
-    //   res.status(204).send(); 
-    // } else {
-    //   res.status(404).send("User not found.");
-    // }
-    res.status(501).send("delete function not implemented yet.");
+    const id = req.params.id;
+    userServices.deleteUserById(id)
+    .then(deletedUser => {
+      if (!deletedUser) {
+        res.status(404).send("User not found.");
+      } else {
+        res.status(204).send("sucess");
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send("Internal Server Error.");
+    });
   });
   
 app.listen(port, () => {
